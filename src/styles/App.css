@@ -1,0 +1,22 @@
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.home .adm-capsule-tabs-header{
+  border:none;
+}
+.home .adm-capsule-tabs-content{
+  padding:0;
+}
+.home .adm-list-default .adm-list-body
+{
+  border:none;
+}
+
+.myForm .adm-form-item{
+  padding-left:0;
+}
