@@ -9,6 +9,7 @@ import {
 import store from '@/store'
 import { ActionAvatar } from '@/store/actionTypes'
 import { sleep } from '@/utils/commonHelp'
+import MSStrorage from '@/utils/msStorage'
 
 const Login = () => {
   const [visible, setVisible] = useState(false)
@@ -34,8 +35,8 @@ const Login = () => {
     store.dispatch({
       type: ActionAvatar.LOGIN_REFRESH
     })
-    localStorage.setItem('_token', '_token')
-    localStorage.setItem('userInfo', JSON.stringify(values))
+    MSStrorage.instance.setItem('_token', '_token', { expires: 5, unit: 'm' })
+    MSStrorage.instance.setItem('userInfo', values, { expires: 5, unit: 'm' })
     await sleep(200)
     navigate('/home')
   }

@@ -75,10 +75,38 @@ getSnapshotBeforeUpdate() 方法需要与 componentDidUpdate() 方法一起使�
 
 5、useActionData <Route path="/song/:songId/edit" action={async ({ params, request }) => { let formData = await request.formData(); return fakeUpdateSong(params.songId, formData); }} /> 每当应用程序向您的路线发送非获取提交（“post”、“put”、“patch”、“delete”）时，都会调用操作。这可以通过几种方式发生
 
-6、 react router 路由守卫，鉴权/权限处理参考文献： https://juejin.cn/post/7195572628958167095 https://blog.csdn.net/Javon_huang/article/details/122252177 router/routerBeforeEach
+```
+6、 react router 路由守卫，鉴权/权限处理
+参考文献： https://juejin.cn/post/7195572628958167095 https://blog.csdn.net/Javon_huang/article/details/122252177
+router/router
 
-7、国际化常用的库 × react-i18next react-intl react-intl-universa 参考文献：https://juejin.cn/post/6844903874172551182#heading-6
+7、国际化常用的库 × react-i18next react-intl react-intl-universa
+参考文献：https://juejin.cn/post/6844903874172551182#heading-6
 
-8、设置主题 darkMode: 'class' dark:bg-dark-300
+8、设置主题
+windi.config.ts darkMode: 'class'
+示例：dark:bg-dark-300
 
 9、localStorage 支持过期时间设置参考：https://juejin.cn/post/7196549269581791287
+```
+
+10、没有嵌套在 Suspense 的组件,在跳转到组件时，会报错....
+
+````
+这个错误提示来自 React Suspense 特性，意思是一个组件在响应同步输入时被暂停。这将导致 UI 被替换为加载指示器。为了解决这个问题，应该用 startTransition 包装会暂停的更新。 在 React Router 中，当你使用 Suspense 和 lazy 加载组件时，如果组件加载过程中出现了同步的操作，就会出现这个错误。为了解决这个问题，你可以使用 React 提供的 startTransition 函数，让这个更新被异步处理。例如： ``` import { startTransition } from 'react'; function handleClick() { startTransition(() => { // your synchronous updates here }); } ``` 需要注意的是，startTransition 只能在 React 18 或更高版本中使用。如果你使用的是 React 17 或更早的版本，需要升级到 React 18 才能使用 startTransition。
+这个错误提示来自 React Suspense 特性，意思是一个组件在响应同步输入时被暂停。这将导致 UI 被替换为加载指示器。为了解决这个问题，应该用 startTransition 包装会暂停的更新。
+
+在 React Router 中，当你使用 Suspense 和 lazy 加载组件时，如果组件加载过程中出现了同步的操作，就会出现这个错误。为了解决这个问题，你可以使用 React 提供的 startTransition 函数，让这个更新被异步处理。例如：
+解决方法1：
+import { startTransition } from 'react';
+
+function handleClick() {
+  startTransition(() => {
+    // your synchronous updates here
+  });
+}
+解决方法2:
+将lazy加载的组件改为同步导入，如下
+//const Login = lazy(() => import('@/views/Login'))
+import Login from '@/views/Login'
+````

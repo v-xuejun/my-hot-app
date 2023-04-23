@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom'
 import {
   Avatar,
   List,
@@ -9,22 +8,27 @@ import {
   ActionSheet,
   Dialog,
   Popup,
-  CheckList
+  CheckList,
+  Mask,
+  Input,
+  Selector
 } from 'antd-mobile'
-import { useEffect, useMemo, useState } from 'react'
-import type { Action } from 'antd-mobile/es/components/action-sheet'
+
 import {
   SetOutline,
   UserSetOutline,
   AppstoreOutline,
   ContentOutline,
-  LoopOutline,
+  CheckShieldOutline,
   LockOutline
 } from 'antd-mobile-icons'
+import { useNavigate } from 'react-router-dom'
+import { useEffect, useMemo, useState, startTransition } from 'react'
+import type { Action } from 'antd-mobile/es/components/action-sheet'
 import { getUserInfo } from '@/store/action'
 import { useAppDispatch, useAppSelector } from '@/store/hook'
 import { ActionAvatar } from '@/store/actionTypes'
-import { sleep } from '@/utils/commonHelp'
+import { sleep, timeType } from '@/utils/commonHelp'
 import { handleSettingTheme } from '@/utils'
 import MSStrorage from '@/utils/msStorage'
 
@@ -39,21 +43,50 @@ const User = () => {
     dispatch(getUserInfo())
   }, [])
 
+  const navigate = useNavigate() // 声明式导航
+
   const avatarUrl = useMemo(() => userInfo.avatarUrl, [userInfo])
   const [visible, setVisible] = useState(false)
   const [show, setShow] = useState(false)
 
   const [showPopup, setShowPopup] = useState(false)
-
+  const [showSheet, setshowSheet] = useState(false)
+  const [showMask, setshowMask] = useState(false)
+  const [unit, setUnit] = useState<timeType>('D')
+  const [value, setValue] = useState('1')
+  const unitOptions: { label: string; value: timeType }[] = [
+    {
+      label: '年',
+      value: 'Y'
+    },
+    {
+      label: '月',
+      value: 'M'
+    },
+    {
+      label: '日',
+      value: 'D'
+    },
+    {
+      label: '时',
+      value: 'h'
+    },
+    {
+      label: '分',
+      value: 'm'
+    },
+    {
+      label: '秒',
+      value: 's'
+    }
+  ]
   const demoImages = [
     'https://images.unsplash.com/photo-1620476214170-1d8080f65cdb?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=3150&q=80',
     'https://images.unsplash.com/photo-1601128533718-374ffcca299b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=3128&q=80',
     'https://images.unsplash.com/photo-1567945716310-4745a6b7844b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=3113&q=80',
     'https://images.unsplash.com/photo-1624993590528-4ee743c9896e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=200&h=1000&q=80'
   ]
-  const navigate = useNavigate() // 声明式导航
 
-  const [showSheet, setshowSheet] = useState(false)
   const actions: Action[] = [
     {
       text: 'Light',
@@ -86,28 +119,34 @@ const User = () => {
       setshowSheet(true)
     }
     if (type === 'interface') {
-      MSStrorage.instance.setItem('name', '永不过期')
-      MSStrorage.instance.setItem('age', '5分钟后清除', {
-        expires: 5,
-        unit: 'm'
-      })
       setShowPopup(true)
     }
     if (type === 'expire') {
-      Toast.show({
-        content: '示列'
+      // Toast.show({
+      //   content: '示列'
+      // })
+      const has = MSStrorage.instance.getItem('_token')
+      has ? setshowMask(true) : navigate('/login')
+    }
+    if (type === 'about') {
+      startTransition(() => {
+        navigate('/details')
       })
-      // MSStrorage.instance.setItem('name', '永不过期')
-      // MSStrorage.instance.setItem('age', '18', { expires: 5, unit: 'm' })
-      // console.log(MSStrorage.instance.getItem('name'), 'name')
-      // console.log(MSStrorage.instance.getItem('age'), 'age')
+      // navigate('/details')
     }
   }
 
   const loginOut = () => {
-    localStorage.removeItem('_token')
-    localStorage.removeItem('userInfo')
+    MSStrorage.instance.removeItem('_token')
+    MSStrorage.instance.removeItem('userInfo')
     navigate('/login')
+  }
+  const handleSetExpier = () => {
+    MSStrorage.instance.setItem('_token', '_token', {
+      expires: parseInt(value),
+      unit: unit
+    })
+    setshowMask(false)
   }
 
   return (
@@ -171,6 +210,11 @@ const User = () => {
               onClick={(e) => handleClick('expire')}>
               localStorage过期设置
             </List.Item>
+            <List.Item
+              prefix={<CheckShieldOutline />}
+              onClick={(e) => handleClick('about')}>
+              关于
+            </List.Item>
           </List>
         </div>
         <div className="flex items-center justify-center pb-10">
@@ -199,6 +243,44 @@ const User = () => {
           <CheckList.Item value="B">HAN</CheckList.Item>
         </CheckList>
       </Popup>
+      <Mask visible={showMask}>
+        <div className="absolute w-full h-full flex items-center justify-center">
+          <div className="w-5/6 h-1/2 p-5 rounded bg-white">
+            <div className="flex items-center">
+              <span className="mr-5 w-10">时间</span>
+              <Input
+                type="number"
+                max={100}
+                value={value}
+                onChange={(val) => {
+                  setValue(val)
+                }}
+                placeholder="请输入数字"
+                className="h-8 pl-2 rounded border border-gray-100"></Input>
+            </div>
+            <div className="mt-5">
+              <Selector
+                columns={2}
+                value={[unit]}
+                options={unitOptions}
+                onChange={(v) => {
+                  if (v.length) {
+                    setUnit(v[0])
+                  }
+                }}
+              />
+            </div>
+            <div className="flex items-center justify-center mt-5">
+              <Button className="mr-5" onClick={() => setshowMask(false)}>
+                取消
+              </Button>
+              <Button color="primary" onClick={() => handleSetExpier()}>
+                确定
+              </Button>
+            </div>
+          </div>
+        </div>
+      </Mask>
     </>
   )
 }

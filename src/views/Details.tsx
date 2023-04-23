@@ -1,6 +1,11 @@
-import { useLoaderData, useParams, useLocation, useNavigate } from "react-router-dom"
+import {
+  useLoaderData,
+  useParams,
+  useLocation,
+  useNavigate
+} from 'react-router-dom'
 import { useState } from 'react'
-import { NavBar } from "antd-mobile"
+import { NavBar } from 'antd-mobile'
 
 const Details = () => {
   // const loader = useLoaderData()
@@ -11,7 +16,7 @@ const Details = () => {
 
   const navigate = useNavigate() // 声明式导航
   const back = () => {
-    navigate(-1)
+    navigate('/user')
   }
   return (
     <div className="w-full h-full flex flex-col">

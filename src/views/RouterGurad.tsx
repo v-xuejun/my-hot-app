@@ -2,12 +2,13 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate, matchRoutes } from 'react-router-dom'
 import { routes } from '@/router/router'
 import { useAppSelector } from '@/store/hook'
+import MSStrorage from '@/utils/msStorage'
 
 // 路由守卫
 export const RouterGurad = ({ children, auth }: any) => {
   const loaction = useLocation()
   const navigate = useNavigate()
-  const token = localStorage.getItem('_token')
+  const token = MSStrorage.instance.getItem('_token')
   const mathchs = matchRoutes(routes, location)
   const isExist = mathchs?.some((s) => s.pathname === loaction.pathname)
   const loginState = useAppSelector((state) => {

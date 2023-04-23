@@ -1,4 +1,3 @@
-
 import { lazy } from 'react'
 import Layout from '@/views/Layout'
 
@@ -8,16 +7,13 @@ const Lover = lazy(() => import('@/views/Lover'))
 const Humorous = lazy(() => import('@/views/Humorous'))
 const User = lazy(() => import('@/views/User'))
 const NoMatch = lazy(() => import('@/views/NoMatch'))
-const Login = lazy(() => import('@/views/Login'))
-const Details = lazy(() => import('@/views/Details'))
+// const Login = lazy(() => import('@/views/Login'))
+// const Details = lazy(() => import('@/views/Details'))
+import Login from '@/views/Login'
+import Details from '@/views/Details'
 
-export interface RouteMeta extends Record<string | number | symbol, any> { }
+export interface RouteMeta extends Record<string | number | symbol, any> {}
 
-// export type RouteObject = RouteObject & {
-//   meta?: RouteMeta
-//   errorElement?: React.ReactNode
-//   children?: RouteConfig[]
-// }
 export interface RouteConfig {
   path: string
   element: React.ReactNode
@@ -78,8 +74,7 @@ export const routes = [
           title: '我的',
           auth: true
         }
-      },
-
+      }
     ]
   },
   {
@@ -92,7 +87,7 @@ export const routes = [
   },
   {
     path: '*',
-    element: NoMatch,
+    element: <NoMatch />,
     meta: {
       title: '404',
       auth: true
