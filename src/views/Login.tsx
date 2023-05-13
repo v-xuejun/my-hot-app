@@ -32,11 +32,12 @@ const Login = () => {
     return Promise.reject(new Error('邮箱不能为空!'))
   }
   const onFinish = async (values: any) => {
+    console.log(values, 'dadasdsa')
     store.dispatch({
       type: ActionAvatar.LOGIN_REFRESH
     })
-    MSStrorage.instance.setItem('_token', '_token', { expires: 5, unit: 'm' })
-    MSStrorage.instance.setItem('userInfo', values, { expires: 5, unit: 'm' })
+    MSStrorage.instance.setItem('_token', '_token', { expires: 5, unit: 'h' })
+    MSStrorage.instance.setItem('userInfo', values, { expires: 5, unit: 'h' })
     await sleep(200)
     navigate('/home')
   }
@@ -61,11 +62,16 @@ const Login = () => {
           <Form.Item
             name="userName"
             rules={[{ required: true, message: '用户名不能为空' }]}>
-            <Input placeholder="邮箱/手机号" autoComplete="off" />
+            <Input placeholder="请输入用户名" autoComplete="off" />
           </Form.Item>
           <Form.Item
             name="userEmail"
             rules={[{ required: true, type: 'email', validator: checkEmail }]}>
+            <Input placeholder="请输入邮箱" autoComplete="off" />
+          </Form.Item>
+          <Form.Item
+            name="userPawwword"
+            rules={[{ required: true, message: '密码不能为空' }]}>
             <div className="flex items-center">
               <Input
                 className="flex-auto"

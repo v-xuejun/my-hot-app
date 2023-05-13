@@ -8,7 +8,7 @@ import store from './store'
 import { Provider } from 'react-redux'
 import './styles/App.css'
 import 'virtual:windi.css'
-
+import '@/lang'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <Provider store={store}>

@@ -1,0 +1,12 @@
+{
+    "user":{
+        "changeAvatar":"更换头像",
+        "changeTheme":"更换主题",
+        "about":"关于",
+        "updateInterface":"更新接口源",
+        "expireSetting":"localStorage过期设置",
+        "language":"国际化",
+        "loginOut":"退出登录",
+        "name":"您好，中国"
+    }
+}

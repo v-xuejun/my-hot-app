@@ -11,7 +11,9 @@ import {
   CheckList,
   Mask,
   Input,
-  Selector
+  Selector,
+  Radio,
+  Space
 } from 'antd-mobile'
 
 import {
@@ -20,7 +22,8 @@ import {
   AppstoreOutline,
   ContentOutline,
   CheckShieldOutline,
-  LockOutline
+  LockOutline,
+  AaOutline
 } from 'antd-mobile-icons'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useMemo, useState, startTransition } from 'react'
@@ -32,7 +35,9 @@ import { sleep, timeType } from '@/utils/commonHelp'
 import { handleSettingTheme } from '@/utils'
 import MSStrorage from '@/utils/msStorage'
 
+import { useTranslation } from 'react-i18next'
 const User = () => {
+  const { t } = useTranslation()
   const dispatch = useAppDispatch()
   const userInfo = useAppSelector((state) => {
     return state.userInfo
@@ -54,6 +59,10 @@ const User = () => {
   const [showMask, setshowMask] = useState(false)
   const [unit, setUnit] = useState<timeType>('D')
   const [value, setValue] = useState('1')
+  const [lang, setLang] = useState(() => {
+    return window.localStorage.getItem('lang') || 'en'
+  })
+  const [visiblePopup, setVisiblePopup] = useState(false)
   const unitOptions: { label: string; value: timeType }[] = [
     {
       label: '年',
@@ -134,8 +143,16 @@ const User = () => {
       })
       // navigate('/details')
     }
+    if (type === 'language') {
+      // window.localStorage.setItem('lang', '')
+      setVisiblePopup(true)
+    }
   }
-
+  const handleChangeLang = (value: string | number) => {
+    localStorage.setItem('lang', value as string)
+    setLang(value as string)
+    location.reload()
+  }
   const loginOut = () => {
     MSStrorage.instance.removeItem('_token')
     MSStrorage.instance.removeItem('userInfo')
@@ -193,33 +210,38 @@ const User = () => {
             <List.Item
               prefix={<UserSetOutline />}
               onClick={(e) => handleClick('user')}>
-              更换头像
+              {t('user.changeAvatar')}
             </List.Item>
             <List.Item
               prefix={<AppstoreOutline />}
               onClick={(e) => handleClick('theme')}>
-              更换主题
+              {t('user.changeTheme')}
             </List.Item>
             <List.Item
               prefix={<ContentOutline />}
               onClick={(e) => handleClick('interface')}>
-              更新接口源
+              {t('user.updateInterface')}
             </List.Item>
             <List.Item
               prefix={<LockOutline />}
               onClick={(e) => handleClick('expire')}>
-              localStorage过期设置
+              {t('user.expireSetting')}
             </List.Item>
             <List.Item
               prefix={<CheckShieldOutline />}
               onClick={(e) => handleClick('about')}>
-              关于
+              {t('user.about')}
+            </List.Item>
+            <List.Item
+              prefix={<AaOutline />}
+              onClick={(e) => handleClick('language')}>
+              {t('user.language')}
             </List.Item>
           </List>
         </div>
         <div className="flex items-center justify-center pb-10">
           <Button type="submit" color="danger" onClick={loginOut}>
-            退出登录
+            {t('user.loginOut')}
           </Button>
         </div>
       </div>
@@ -281,6 +303,37 @@ const User = () => {
           </div>
         </div>
       </Mask>
+      <Popup
+        visible={visiblePopup}
+        onMaskClick={() => {
+          setVisiblePopup(false)
+        }}
+        bodyStyle={{ height: '20vh' }}>
+        <div className="p-6">
+          <Radio.Group defaultValue={lang} onChange={handleChangeLang}>
+            <Space direction="vertical" style={{ '--gap-vertical': '15px' }}>
+              <Radio
+                value="zh"
+                style={{
+                  '--icon-size': '28px',
+                  '--font-size': '20px',
+                  '--gap': '10px'
+                }}>
+                中文
+              </Radio>
+              <Radio
+                value="en"
+                style={{
+                  '--icon-size': '28px',
+                  '--font-size': '20px',
+                  '--gap': '10px'
+                }}>
+                英文
+              </Radio>
+            </Space>
+          </Radio.Group>
+        </div>
+      </Popup>
     </>
   )
 }

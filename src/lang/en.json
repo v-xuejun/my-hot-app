@@ -1,0 +1,12 @@
+{
+    "user":{
+        "changeAvatar":"Change Avatar",
+        "changeTheme":"Change Theme",
+        "about":"About",
+        "updateInterface":"Update interface source",
+        "expireSetting":"Expire Setting",
+        "language":"Language",
+        "loginOut":"Login out",
+        "name":"您好，中国"
+    }
+}
